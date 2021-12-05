@@ -2,26 +2,27 @@
 class Account {
 
 
-  constructor(username) {
+  constructor(account) {
     this.username = username;
     // Have the account balance start at $0 since that makes more sense.
-    this.balance = 0;
-    this.transactions = [];
+    this.account.balance = 0;
+    this.account = account;
+    this.account.transactions = [];
     }
   get accountBalance() {
     // Calculate the balance using the transaction objects.
-    const withdrawls = this.transactions.map(function (transaction) {
-      if (transaction.type === 'withdrawl') {
-        return transaction.amount;}
+    const withdrawls = this.account.transactions.map(function (transaction) {
+      if (this.account.transaction.type === 'withdrawl') {
+        return this.account.transaction;}
      })
 
-    const deposits = this.transactions.map(function (transaction) {
-      if (transaction.type === 'deposit') {
-        return transaction.amount;}
+    const deposits = this.account.transactions.map(function (transaction) {
+      if (this.account.transaction.type === 'deposit') {
+        return this.account.transaction;}
       })
 
     if (deposits.length < 0) {
-      this.balance = this.balance - withdrawls.reduce(function (acc, withdrawl) {
+      this.account.balance = this.account.balance - withdrawls.reduce(function (acc, withdrawl) {
         return acc + withdrawl;
       });
     }
@@ -30,22 +31,22 @@ class Account {
     const transactionBalances = deposits.map(function (deposit) {
       return deposit - withdrawl.next().value;})
 
-    this.balance = transactionBalances.reduce((acc, transaction) => {
-      return acc + transaction.amount;
+    this.account.balance = transactionBalances.reduce((acc, transaction) => {
+      return acc + this.account.transaction;
     });
-    console.log(this.balance);
-    return this.balance;
+    console.log(this.account.balance);
+    return this.account.balance;
   }
   set addTransaction(transaction) {
-    this.transactions.push(transaction);
+    this.account.transactions.push(transaction);
   }
 }
 
 class Transaction extends Account {
   get commit() {
     // Keep track of the time of the transaction
-    this.time = new Date();
-    this.addTransaction = this;
+    this.account.time = new Date();
+    this.account.addTransaction = this;
   }
 
    set transfer (amount) {
@@ -58,21 +59,24 @@ class Deposit extends Transaction {
 
   get commit (){
     super.commit
-    this.balance += this.amount;
-    this.type = "deposit";
-    return this.balance;
+    this.account.balance += this.amount;
+    this.account.type = "deposit";
+    return this.account.balance;
   }
 
 }
 
 class Withdrawal extends Transaction {
-
+  constructor(amount, account) {
+    this.amount = amount;
+    this.account = account;
+  }
   get commit() {
 
-    this.balance -= this.amount;
+    this.account.balance -= this.amount;
     super.commit
-    this.type = 'withdrawal';
-    return this.balance;
+    this.account.type = 'withdrawal';
+    return this.account.balance;
   }
 
 }
@@ -84,10 +88,10 @@ class Withdrawal extends Transaction {
 
 // DRIVER CODE BELOW
 // We use the code below to "drive" the application logic above and make sure it's working as expected
-const myAccount = "snow-patrol";
+const myAccount = new Account("snow-patrol");
 
-w1 = new Withdrawal(myAccount);
-w1.transfer = 50;
+
+w1 = new Withdrawal(50, myAccount);
 w1.commit;
 console.log('Transaction 1:', w1.transactions[0]);
 console.log(myAccount)
@@ -98,4 +102,4 @@ w2.commit;
 console.log('Transaction 2:', w2.transactions[0]);
 
 console.log('Balance:', w2.accountBalance);
-// 
+//
