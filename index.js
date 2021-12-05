@@ -43,6 +43,10 @@ class Account {
 }
 
 class Transaction extends Account {
+  constructor(amount, account) {
+    this.amount = amount;
+    this.account = account;
+  }
   get commit() {
     // Keep track of the time of the transaction
     this.account.time = new Date();
@@ -67,10 +71,7 @@ class Deposit extends Transaction {
 }
 
 class Withdrawal extends Transaction {
-  constructor(amount, account) {
-    this.amount = amount;
-    this.account = account;
-  }
+
   get commit() {
 
     this.account.balance -= this.amount;
